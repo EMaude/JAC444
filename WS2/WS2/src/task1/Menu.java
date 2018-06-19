@@ -22,6 +22,7 @@ public class Menu {
 			break;
 		default:
 			System.out.println("Invalid");
+			Input.clear();
 			drawMenu();
 			break;	
 		}

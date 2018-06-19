@@ -41,6 +41,11 @@ public class Input {
 		return input.next().trim().charAt(0);
 	}
 	
+	public static void clear()
+	{
+		input.nextLine();
+	}
+	
 	public static void close()
 	{
 		input.close();

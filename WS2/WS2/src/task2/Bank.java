@@ -4,23 +4,21 @@ import java.util.ArrayList;
 
 public class Bank {
 	  
-	public static double minAssetLimit = 120;
+	private static double minAssetLimit = 201.00;
 	
 	private int id; 
 	private double balance;
-	private boolean	isSafe; 
-	
 	//inner class loan
 	public class Loan{ 
-		private Bank reciver; 
+		private int reciver; 
 		private double amount; 
 		
 		public Loan() { 
-			reciver = null; 
+			reciver = -1; 
 			amount = 0.0;
 		}
 		
-		public Loan(Bank b, double lamount) { 
+		public Loan(int b, double lamount) { 
 			setReciver(b);
 			setAmount(lamount);
 		}
@@ -33,11 +31,11 @@ public class Bank {
 			this.amount = amount;
 		}
 
-		public Bank getReciver() {
+		public int getReciver() {
 			return reciver;
 		}
 
-		public void setReciver(Bank reciver) {
+		public void setReciver(int reciver) {
 			this.reciver = reciver;
 		}
 	} 
@@ -52,47 +50,25 @@ public class Bank {
 	
 	public Bank(int iid, double ibalance) { 
 		setId(iid); 
-		balance = ibalance;	
+		balance = ibalance;
 	}
 	
-	public boolean isSafe() {
-		return	isSafe;
-	}
-	         
-	public void checkSafe()
-	{  
-		double loanedAmount = 0.0; 
-		
-		for(int i = 0; i < loans.size(); i++) {
-			loanedAmount += loans.get(i).amount;
-		}
-		
-		isSafe = (balance + loanedAmount >= minAssetLimit);
-	} 
 	
-	public boolean checkSafeCascade() { 
-		checkSafe();
-		if(isSafe == true) 
-		{ 
-			double safeAmount = balance;
-			for(int i = 0; i < loans.size(); i++) {
-				
-				if(loans.get(i).reciver.getId() == this.getId())
-				{ 
-					return true;
-				}
-				else if(loans.get(i).reciver.checkSafeCascade()) {
-					safeAmount += loans.get(i).amount;
-				}
-				
+	public boolean checkSafe(ArrayList<Integer> unsafeBanks) 
+	{
+		double loanedAmount = 0.0;
+		
+		for(int i = 0; i < loans.size(); i++)
+		{
+			if(!unsafeBanks.contains(loans.get(i).getReciver()))
+			{
+				loanedAmount += loans.get(i).amount;
 			}
-			isSafe = safeAmount >= minAssetLimit;
 		}
-		 
-		return isSafe;
-	}  
+		return balance + loanedAmount >= minAssetLimit;
+	}
 	
-	public void newLoan(Bank reciver, double lAmount)
+	public void newLoan(int reciver, double lAmount)
 	{
 		loans.add(new Loan(reciver, lAmount));
 	}
@@ -103,5 +79,30 @@ public class Bank {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public static void setminAssetLimit(double i)
+	{
+		minAssetLimit = i;
+	}
+	
+	public static double getminAssetLimit()
+	{ 
+		return minAssetLimit;
+	}
+	
+	public double getBalance()
+	{
+		return balance;
+	}
+	
+	public void dspLoans()
+	{
+		System.out.println("Loans: ");
+		for(int i = 0; i < loans.size(); i++)
+		{
+			System.out.println("	Bank: " + loans.get(i).reciver + " Amount: " + loans.get(i).amount);
+		}
+		System.out.println("");
 	}
 }

@@ -66,6 +66,7 @@ public class UI extends Application
 		addB.button.setOnAction(event ->{
 			UpdateContact();
 			FileManager.createRecord(contact.toString());
+            ChangeContact(FileManager.readLastRecord());
 		});
 
 		ActionButton firstB = new ActionButton("First");
@@ -95,7 +96,14 @@ public class UI extends Application
 		updateB.button.setOnAction(event ->{
 			UpdateContact();
 			FileManager.updateRecord(contact.toString());
+            ChangeContact(FileManager.readRecord());
 		});
+
+		ActionButton clearB = new ActionButton("Clear");
+		clearB.button.setOnAction(event ->{
+		    FileManager.setPos(0);
+            ChangeContact(new Contact());
+        });
 
 		pane.getChildren().add(ActionButton.buttonHBox);
 		//Draw Scene

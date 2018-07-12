@@ -76,8 +76,12 @@ public class FileManager {
         try (FileChannel fc = (FileChannel.open(path, READ))){
             int nread;
             length = (int) fc.size();
-            int maxPos = length / 96;
+            int maxPos = (length / 96) - 1;
 
+            if(maxPos < 0)
+            {
+                maxPos = 0;
+            }
             if(pos < 0)
             {
                 pos = 0;

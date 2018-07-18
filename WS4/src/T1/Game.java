@@ -240,6 +240,89 @@ public class Game {
      */
     public  static boolean checkDiag(boolean red, int col)
     {
-        return false;
+        char[] Ldiag = new char[6]; //Low diagonal, where the left most value has the lowest x
+        char[] Hdiag = new char[6]; //High diagonal, where the left most value has the highest x
+
+        boolean state = false;
+        int count = 0;
+        char c = (red)? 'R' : 'Y';
+
+        int row = 0;
+        int j = 0;
+
+        for (int i = 5; i >= 0; i--) {
+            if (board[i][col] != ' ') {
+                row = i;
+            }
+        }
+
+        int x = col;
+        int y = row;
+        //find lowest intersect
+        while(x > 0 && y > 0)
+        {
+            x--;
+            y--;
+        }
+
+        do
+        {
+            j  = 0;
+            Ldiag[j] = board[x][y];
+            j++;
+            x++;
+            y++;
+        }while(x < 6 && y < 5 && j < 50);
+
+        //check for Ldiag win
+        for(int i = 0; i < 6; i++)
+        {
+            if(Ldiag[i] == c)
+            {
+                count++;
+                if(count == 4)
+                {
+                    state = true;
+                }
+            }
+            else
+            {
+                count = 0;
+            }
+        }
+
+        if(!state) {
+            x = col;
+            y = row;
+            //find highest intersect
+            while (x < 5 && y > 0) {
+                x++;
+                y--;
+            }
+            do {
+                j = 0;
+                Hdiag[j] = board[x][y];
+                j++;
+                x--;
+                y++;
+            } while (x > 0 && y < 5 && j < 5);
+
+            for(int i = 0; i  <6; i++)
+            {
+                if(Hdiag[i] == c)
+                {
+                    count++;
+                    if(count == 4)
+                    {
+                        state = true;
+                    }
+                }
+                else
+                {
+                    count = 0;
+                }
+            }
+        }
+        return state;
     }
 }

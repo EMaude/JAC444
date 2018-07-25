@@ -6,26 +6,28 @@
  This assignment represents my own work in accordance with Seneca Academic Policy.
  Date:7/20/18
  **********************************************/
+package T1;
 
-public class name{
+public class Name {
     
     String m_name;
-    Char m_sex;
+    char m_sex;
     int m_rank;    
     int m_year;
     
-    public name()
+    public Name()
     {
         m_name = "";
-        m_sex = '';
+        m_sex = ' ';
         m_rank = -1;
     }
     
-    public name(String name, Char sex; int rank, int m_year)
+    public Name(String name, char sex, int rank, int year)
     {
-        m_name = name;
+        m_name = name.trim();
         m_sex = sex;
         m_rank = rank;
+        m_year = year;
     }
     
     public void display()

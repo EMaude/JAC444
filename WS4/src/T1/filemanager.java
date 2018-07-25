@@ -1,3 +1,11 @@
+package T1;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**********************************************
  Workshop 4
  Name:Elliot Maude
@@ -7,37 +15,43 @@
  Date:7/20/18
  **********************************************/
 
-public class filemanager{
+public class FileManager {
     
     Path path;
     int m_year; 
     BufferedReader br;
     
-    public filemanager(int year)
+    public FileManager(int year)
     {
         m_year = year;
-        path = Paths.get("babynamesranking" + m_year + ".txt");
+        path = Paths.get("data/babynamesranking" + m_year + ".txt");
         
         try
         {
-            br = new BufferedReader(new FileReader(filename));
+            br = new BufferedReader(new FileReader(path.toFile()));
         } 
         catch(FileNotFoundException e)
         {
+            br = null;
             System.out.println("No data from  " + year + " found");
         }
     }
-    
-    public void readRecord()
+
+    public boolean good()
     {
-        String in;
+        return br != null;
+    }
+
+    public String readRecord()
+    {
+        String in = null;
         
         try {
 			in = br.readLine();
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
-        
-        entityManager.fromString(in, m_year);
+
+		return in;
     }
 } 

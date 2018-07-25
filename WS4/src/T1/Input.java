@@ -25,16 +25,7 @@ public class Input {
      */
 	public static int getInt()
 	{
-		String in = input.nextLine();
-		
-		Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(in);
-		
-		if(m.find())
-		{
-			return (int)Double.parseDouble(m.group(1));
-		}else {
-			return -1;
-		}
+		return (int) getDouble();
 	}
 
     /**
@@ -49,7 +40,12 @@ public class Input {
 		
 		if(m.find()) 
 		{
-			return Double.parseDouble(m.group(1));
+		    try{
+		        return Double.parseDouble(m.group(1));
+            }catch( NumberFormatException e)
+            {
+                return -1;
+            }
 		}
 		else
 		{
@@ -65,6 +61,11 @@ public class Input {
 	{
 		return input.next().trim().charAt(0);
 	}
+
+	public  static String getString()
+    {
+        return input.nextLine().trim();
+    }
 
     /**
      * flushes input buffer

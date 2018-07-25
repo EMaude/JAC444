@@ -6,23 +6,33 @@
  This assignment represents my own work in accordance with Seneca Academic Policy.
  Date:7/20/18
  **********************************************/
+package T1;
 
-public class entityManager{
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class EntityManager {
     
-    static List<name> mNames = new List<name>();
-    static List<name> fNames = new List<name>();
+    static ArrayList<Name> mNames = new ArrayList<Name>();
+    static ArrayList<Name> fNames = new ArrayList<Name>();
     
     public static void fromString(String in, int year)
     {
         String recs[] = in.split(" ");
         
-        int rank = m.getInt(recs[0]);
-        
-        mNames.add(new name(recs[1], 'M', rank, year));
-        fNames.add(new name(recs[3], 'F', rank, year));
+        int rank = getInt(recs[0]);
+
+        String mName = recs[1].split("\t")[1];
+        String fName = recs[2];
+
+        mNames.add(new Name(mName, 'M', rank, year));
+        fNames.add(new Name(fName, 'F', rank, year));
+
     }
-    
-    public static name Find(String in, Char sex)
+
+
+    public static Name find(String in, char sex)
     {
        if(sex == 'M' || sex == 'm')
        {
@@ -43,18 +53,19 @@ public class entityManager{
                    return fNames.get(i);
                }
            }
-       } else
-       {
-           return null;
        }
+
+       System.out.println("No record found for " + in + " sex: " + sex);
+       return null;
     }
     
     public static void clear()
     {
-        names.clear();
+        mNames.clear();
+        fNames.clear();
     }
     
-    public int getInt(String in)
+    public static int getInt(String in)
 	{
 		Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(in);
 		

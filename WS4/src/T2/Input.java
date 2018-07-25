@@ -25,31 +25,27 @@ public class Input {
      */
 	public static int getInt()
 	{
-		String in = input.nextLine();
-		
-		Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(in);
-		
-		if(m.find())
-		{
-			return (int)Double.parseDouble(m.group(1));
-		}else {
-			return -1;
-		}
+		return (int) getDouble();
 	}
 
-    /**
-     * reads the input line and uses regex to pull out a double.
-     * @return first double in input
-     */
+	/**
+	 * reads the input line and uses regex to pull out a double.
+	 * @return first double in input
+	 */
 	public static double getDouble()
 	{
 		String in = input.nextLine();
-	
+
 		Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(in);
-		
-		if(m.find()) 
+
+		if(m.find())
 		{
-			return Double.parseDouble(m.group(1));
+			try{
+				return Double.parseDouble(m.group(1));
+			}catch( NumberFormatException e)
+			{
+				return -1;
+			}
 		}
 		else
 		{

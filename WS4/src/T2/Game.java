@@ -22,7 +22,6 @@ public class Game {
      */
     static char[][] board = new char[6][7]; //rows cols
 
-
     /**
      * clears the game board and starts the game
      */
@@ -51,7 +50,6 @@ public class Game {
         System.out.println("_______________"); //14 bars 2*rows
     }
 
-    //TODO: Add play again functionality
     /**
      * Main game logic:
      * Handles who's turn it is
@@ -62,7 +60,7 @@ public class Game {
     {
         boolean red = false;
         int col;
-        
+        int moves = 0;
         do
         {
             red = !red;
@@ -71,9 +69,14 @@ public class Game {
                 System.out.println("Drop a " + ((red)? "red" : "yellow") + " disk at col (0 - 6)");
                 col = Input.getInt();
             }while(!putDisk(red, col));
-            
-        }while(!endState(red, col));
-        //endGame();
+            moves++;
+        }while(moves < 7 || !endState(red, col));
+
+        if(again())
+        {
+            init();
+        }
+
     }
 
     /**
@@ -114,17 +117,21 @@ public class Game {
      */
     public static boolean endState(boolean red, int col)
     {
-
         boolean state = checkVert(red, col);
 
         if(!state)
         {
-            checkHorz(red, col);
+            state = checkHorz(red, col);
         }
 
         if(!state)
         {
-            checkDiag(red, col);
+            state = checkDiag1(red, col);
+        }
+
+        if(!state)
+        {
+            state = checkDiag2(red, col);
         }
 
         if(state)
@@ -139,7 +146,7 @@ public class Game {
             draw();
             System.out.println("Draw!");
         }
-        
+
         return state;
     }
 
@@ -172,28 +179,15 @@ public class Game {
      */
     public static boolean checkVert(boolean red, int col)
     {
-        boolean state = false;
-        int count = 0;
-        char c = (red)? 'R' : 'Y';
+        char[] vert = new char[6];
 
         //Vertical
         for(int i = 0; i < 6; i++)
         {
-            if(board[i][col] == c)
-            {
-                count++;
-                if(count == 4)
-                {
-                    state = true;
-                }
-            }
-            else
-            {
-                count = 0;
-            }
+            vert[i] = board[i][col];
         }
 
-        return state;
+        return checkArray(vert, red);
     }
 
     /**
@@ -204,85 +198,89 @@ public class Game {
      */
     public  static boolean checkHorz(boolean red, int col)
     {
-        boolean state = false;
-        int count = 0;
-        char c = (red)? 'R' : 'Y';
+        char[] horz = new char[7];
 
-        if(!state) {
-            //Horizontal
-            int row = 0;
+        int row = getRow(col);
 
-            for (int i = 5; i >= 0; i--) {
-                if (board[i][col] != ' ') {
-                    row = i;
-                }
-            }
-            for (int i = 0; i < 7; i++) {
-                if (board[row][i] == c) {
-                    count++;
-                    if (count == 4) {
-                        state = true;
-                    }
-                } else {
-                    count = 0;
-                }
-            }
+        for(int i = 0; i < 7; i++)
+        {
+            horz[i] = board[row][i];
         }
-        return state;
+
+        return checkArray(horz, red);
     }
 
-    //TODO: Fix and clean up
     /**
      * Checks for Diagonal win condition
      * @param red color to check
      * @param col column of last piece
      * @return state of the win condition
      */
-    public  static boolean checkDiag(boolean red, int col)
+    public  static boolean checkDiag1(boolean red, int col)
     {
-        char[] Ldiag = new char[6]; //Low diagonal, where the left most value has the lowest x
-        char[] Hdiag = new char[6]; //High diagonal, where the left most value has the highest x
+        char[] diag = new char[6];
 
-        boolean state = false;
-        int count = 0;
-        char c = (red)? 'R' : 'Y';
+        int row = getRow(col);
 
-        int row = 0;
-        int j = 0;
+        int x = row;
+        int y = col;
 
-        for (int i = 5; i >= 0; i--) {
-            if (board[i][col] != ' ') {
-                row = i;
-            }
-        }
-
-        int x = col;
-        int y = row;
-        //find lowest intersect
         while(x > 0 && y > 0)
         {
-            x--;
-            y--;
+            --x;
+            --y;
         }
 
-        do
-        {
-            j  = 0;
-            Ldiag[j] = board[x][y];
-            j++;
+        int i = 0;
+        while(x < 6 && y < 7){
+            diag[i] = board[x][y];
             x++;
             y++;
-        }while(x < 6 && y < 5 && j < 50);
+            i++;
+        }
 
-        //check for Ldiag win
-        for(int i = 0; i < 6; i++)
+        return checkArray(diag, red);
+    }
+
+    public  static boolean checkDiag2(boolean red, int col)
+    {
+        char[] diag = new char[6];
+
+        int row = getRow(col);
+
+        int x = row;
+        int y = col;
+
+        while(x < 5 && y > 0)
         {
-            if(Ldiag[i] == c)
+            ++x;
+            --y;
+        }
+
+        int i = 0;
+        while(x > 0 && y < 7){
+            diag[i] = board[x][y];
+            x--;
+            y++;
+            i++;
+        }
+
+        return checkArray(diag, red);
+    }
+
+    public static boolean checkArray(char[] arr, boolean red)
+    {
+        char c = (red)? 'R' : 'Y';
+        int count = 0;
+
+        for(int i = 0; i < arr.length; i++)
+        {
+            if(arr[i] == c)
             {
                 count++;
                 if(count == 4)
                 {
-                    state = true;
+                    return true;
                 }
             }
             else
@@ -291,38 +289,45 @@ public class Game {
             }
         }
 
-        if(!state) {
-            x = col;
-            y = row;
-            //find highest intersect
-            while (x < 5 && y > 0) {
-                x++;
-                y--;
-            }
-            do {
-                j = 0;
-                Hdiag[j] = board[x][y];
-                j++;
-                x--;
-                y++;
-            } while (x > 0 && y < 5 && j < 5);
+        return false;
+    }
 
-            for(int i = 0; i  <6; i++)
-            {
-                if(Hdiag[i] == c)
-                {
-                    count++;
-                    if(count == 4)
-                    {
-                        state = true;
-                    }
-                }
-                else
-                {
-                    count = 0;
-                }
+    public static int getRow(int col)
+    {
+        int row = 0;
+        for (int i = 5; i >= 0; i--) {
+            if (board[i][col] != ' ') {
+                row = i;
             }
         }
-        return state;
+        return row;
+    }
+
+    public static void debugArrayPrint(char[] arr)
+    {
+        for(int i = 0; i < arr.length; i++)
+        {
+            System.out.print( i + " " + arr[i] + "|");
+        }
+        System.out.println(" ");
+    }
+
+    public static boolean again()
+    {
+        System.out.println("Play Again?(y/n) ");
+        char choice = Input.getChar();
+        Input.clear();
+
+        if(choice == 'Y' || choice == 'y')
+        {
+            return true;
+        }
+        else if(choice == 'N' || choice == 'n')
+        {
+            return false;
+        }
+        else {
+            return again();
+        }
     }
 }
